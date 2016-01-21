@@ -11,11 +11,11 @@ class Database(object):
     def execute(self, sql, params=None):
         try:
             return self.cursor.execute(sql, params)
-        except ValueError, e:
+        except ValueError as e:
             if params is None:
                 return self.cursor.execute(sql, '')
             else:
-                raise ValueError(e)
+                raise e
 
     def fetchall(self):
         for row in self.cursor:
