@@ -1,3 +1,4 @@
+from six import string_types
 from psycopg2.extensions import AsIs
 from arbalest.core import PipelineStep
 from arbalest.redshift.manifest import Manifest
@@ -157,7 +158,7 @@ class SqlStep(PipelineStep):
                 self.__execute(statement)
 
     def __execute(self, statement):
-        if isinstance(statement, basestring):
+        if isinstance(statement, string_types):
             self.database.execute(statement)
         else:
             query = statement[0]

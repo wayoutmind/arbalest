@@ -1,3 +1,4 @@
+from six import string_types
 from arbalest.core import SchemaException
 
 
@@ -8,7 +9,7 @@ class Property(object):
         self.__column_name = column_name
         self.__column_type_or_child_property = column_type_or_child_property
 
-        if isinstance(column_type_or_child_property, basestring):
+        if isinstance(column_type_or_child_property, string_types):
             self.__validate_supported_type(column_type_or_child_property)
             self.type = column_type_or_child_property
             self.column_name = self.__name(column_name, name)

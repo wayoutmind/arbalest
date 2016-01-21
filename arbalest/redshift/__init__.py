@@ -1,4 +1,5 @@
 import sqlite3
+from six import string_types
 from arbalest.redshift.manifest import SqlManifest
 from arbalest.redshift.step import BulkCopyFromS3JsonStep, SqlStep, \
     ManifestCopyFromS3JsonStep
@@ -58,7 +59,7 @@ class S3BulkCopyPipeline(Pipeline):
         self.aws_access_key_id = aws_access_key_id
         self.aws_secret_access_key = aws_secret_access_key
 
-        if isinstance(bucket, basestring):
+        if isinstance(bucket, string_types):
             self.bucket = Bucket(aws_access_key_id, aws_secret_access_key,
                                  bucket)
         else:
@@ -95,7 +96,7 @@ class S3CopyPipeline(Pipeline):
         self.aws_access_key_id = aws_access_key_id
         self.aws_secret_access_key = aws_secret_access_key
 
-        if isinstance(bucket, basestring):
+        if isinstance(bucket, string_types):
             self.bucket = Bucket(aws_access_key_id, aws_secret_access_key,
                                  bucket)
         else:
