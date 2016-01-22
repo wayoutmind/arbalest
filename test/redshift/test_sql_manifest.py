@@ -1,13 +1,18 @@
 import unittest
 
 from boto.s3.key import Key
-from mock import Mock, patch, mock_open, create_autospec, call
 from arbalest.redshift.manifest import SqlManifest
 from arbalest.redshift.schema import Property, JsonObject
 from arbalest.s3 import Bucket
 from arbalest.sql import Database
 from test import BUCKET_NAME, TABLE_NAME, AWS_ACCESS_KEY_ID, \
     AWS_SECRET_ACCESS_KEY
+import six
+
+if six.PY2:
+    from mock import Mock, patch, mock_open, create_autospec, call
+else:
+    from unittest.mock import Mock, patch, mock_open, create_autospec, call
 
 
 class SqlManifestShould(unittest.TestCase):
@@ -143,7 +148,7 @@ class SqlManifestShould(unittest.TestCase):
         key.get_contents_to_filename = Mock()
         self.bucket.get = Mock(return_value=key)
 
-        with patch('__builtin__.open', f, create=True):
+        with patch('io.open', f, create=True):
             self.manifest.save()
 
             f.assert_called_once_with(self.manifest.file_name, 'wb')
@@ -151,27 +156,27 @@ class SqlManifestShould(unittest.TestCase):
             handle = f()
             self.assertEqual(call(0), handle.seek.call_args_list[0])
             self.assertEqual(2, handle.truncate.call_count)
-            self.assertEqual([call('{\n'),
-                              call('"entries": [\n'),
+            self.assertEqual([call('{\n'.encode()),
+                              call('"entries": [\n'.encode()),
                               call(
-                                  '{"url": "s3://bucket/object_path/35cbf09a-b2dc-43f2-96f6-7d7573906268", "mandatory": true},\n'),
+                                  '{"url": "s3://bucket/object_path/35cbf09a-b2dc-43f2-96f6-7d7573906268", "mandatory": true},\n'.encode()),
                               call(
-                                  '{"url": "s3://bucket/object_path/80536e83-6bbe-4a42-ade1-533d99321a6c", "mandatory": true},\n'),
+                                  '{"url": "s3://bucket/object_path/80536e83-6bbe-4a42-ade1-533d99321a6c", "mandatory": true},\n'.encode()),
                               call(
-                                  '{"url": "s3://bucket/object_path/e822e2ae-61f5-4be0-aacd-ca6de70faad1", "mandatory": true},\n'),
+                                  '{"url": "s3://bucket/object_path/e822e2ae-61f5-4be0-aacd-ca6de70faad1", "mandatory": true},\n'.encode()),
                               call(
-                                  '{"url": "s3://bucket/object_path/cf00b394-3ff3-4418-b244-2ccf104fcc40", "mandatory": true},\n'),
+                                  '{"url": "s3://bucket/object_path/cf00b394-3ff3-4418-b244-2ccf104fcc40", "mandatory": true},\n'.encode()),
                               call(
-                                  '{"url": "s3://bucket/object_path/2014-09-02/19440481-7766-4061-bd42-4a54fa0aac7c", "mandatory": true},\n'),
+                                  '{"url": "s3://bucket/object_path/2014-09-02/19440481-7766-4061-bd42-4a54fa0aac7c", "mandatory": true},\n'.encode()),
                               call(
-                                  '{"url": "s3://bucket/object_path/282e6063-ecef-4e45-bdfb-9fdfb39840cd", "mandatory": true},\n'),
+                                  '{"url": "s3://bucket/object_path/282e6063-ecef-4e45-bdfb-9fdfb39840cd", "mandatory": true},\n'.encode()),
                               call(
-                                  '{"url": "s3://bucket/object_path/19440481-7766-4061-bd42-4a54fa0aac7c", "mandatory": true},\n'),
+                                  '{"url": "s3://bucket/object_path/19440481-7766-4061-bd42-4a54fa0aac7c", "mandatory": true},\n'.encode()),
                               call(
-                                  '{"url": "s3://bucket/object_path/00c68a1e-85f2-49e5-9d07-6922046dbc5a", "mandatory": true},\n'),
+                                  '{"url": "s3://bucket/object_path/00c68a1e-85f2-49e5-9d07-6922046dbc5a", "mandatory": true},\n'.encode()),
                               call(
-                                  '{"url": "s3://bucket/object_path/00c68a1e-85f2-49e5-9d07-6922046dbc5a", "mandatory": true}\n'),
-                              call(']}')], handle.write.call_args_list)
+                                  '{"url": "s3://bucket/object_path/00c68a1e-85f2-49e5-9d07-6922046dbc5a", "mandatory": true}\n'.encode()),
+                              call(']}'.encode())], handle.write.call_args_list)
 
             key.set_contents_from_filename.assert_called_once_with(
                 self.manifest.file_name)

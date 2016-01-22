@@ -1,9 +1,13 @@
 import unittest
 
-from mock import Mock, create_autospec
 from arbalest.redshift import S3CopyPipeline
-
 from arbalest.contrib.luigi import PipelineTask
+import six
+
+if six.PY2:
+    from mock import Mock, create_autospec
+else:
+    from unittest.mock import Mock, create_autospec
 
 
 class PipelineTaskShould(unittest.TestCase):

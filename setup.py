@@ -27,7 +27,7 @@ setup(
         'Topic :: System :: Distributed Computing'
     ],
     install_requires=['boto>=2.32.1,<3.0',
-                      'luigi==1.0.20',
+                      'luigi==1.3.0',
                       'protobuf==2.6.1',
                       'psycopg2',
                       'six==1.10.0'],

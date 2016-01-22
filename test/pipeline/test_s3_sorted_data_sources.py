@@ -2,10 +2,14 @@ import json
 import unittest
 
 from boto.s3.key import Key
-from mock import create_autospec, Mock, call
 from arbalest.s3 import Bucket
-
 from arbalest.pipeline import S3SortedDataSources
+import six
+
+if six.PY2:
+    from mock import create_autospec, Mock, call
+else:
+    from unittest.mock import create_autospec, Mock, call
 
 
 def mock_key(name):

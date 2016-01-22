@@ -1,4 +1,5 @@
 import json
+import io
 from arbalest.s3 import normalize_path
 from arbalest.sql import Database
 
@@ -136,7 +137,7 @@ class SqlManifest(object):
         offsets = []
         last_entry = None
 
-        with open(self.file_name, 'wb') as f:
+        with io.open(self.file_name, 'wb') as f:
             f.seek(0)
             f.truncate()
             offset += self.__write(f, '{\n')
@@ -153,8 +154,8 @@ class SqlManifest(object):
             f.truncate()
             if last_entry is not None:
                 line = last_entry[0:-2] + '\n'
-                f.write(line)
-            f.write(']}')
+                f.write(line.encode())
+            f.write(']}'.encode())
 
         self.bucket.get(self.manifest_key).set_contents_from_filename(
             self.file_name)
@@ -177,5 +178,5 @@ class SqlManifest(object):
 
     @staticmethod
     def __write(fd, line):
-        fd.write(line)
+        fd.write(line.encode())
         return len(line)

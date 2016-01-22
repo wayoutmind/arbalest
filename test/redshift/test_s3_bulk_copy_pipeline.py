@@ -1,12 +1,17 @@
 import unittest
 
-from mock import Mock, create_autospec
 from arbalest.core import PipelineException
 from arbalest.redshift import S3BulkCopyPipeline, TargetTable
 from arbalest.redshift.schema import JsonObject, Property
 from arbalest.redshift.step import BulkCopyFromS3JsonStep, SqlStep
 from arbalest.sql import Database
 from test import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, TABLE_NAME
+import six
+
+if six.PY2:
+    from mock import Mock, create_autospec
+else:
+    from unittest.mock import Mock, create_autospec
 
 
 class S3BulkCopyPipelineShould(unittest.TestCase):
